@@ -10,7 +10,7 @@ import secrets
 
 class Database:
     def __init__(self, host='localhost', database='securechat', 
-                 user='root', password=''):
+                 user='root', password='F16AIRforce'):
         """Initialize database connection"""
         self.host = host
         self.database = database
@@ -124,7 +124,7 @@ class Database:
 # Example usage
 if __name__ == "__main__":
     # Test database connection
-    db = Database(user='root', password='your_mysql_password')
+    db = Database(user='root', password='F16AIRforce')
     if db.connect():
         # Test registration
         success, msg = db.register_user('alice@test.com', 'alice', 'SecurePass123')

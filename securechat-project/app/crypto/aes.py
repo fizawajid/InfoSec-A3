@@ -1,41 +1,45 @@
 """
-AES-128(ECB)+PKCS#7 helpers (use library).
+AES-128 CBC encryption/decryption with PKCS7 padding
 """
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 from cryptography.hazmat.primitives import padding
 from cryptography.hazmat.backends import default_backend
-from .utils import b64e, b64d
-
-def pad_pkcs7(data: bytes, block_size: int = 16) -> bytes:
-    """PKCS#7 pad to block_size."""
-    padder = padding.PKCS7(block_size).padder()
-    return padder.update(data) + padder.finalize()
-
-def unpad_pkcs7(data: bytes) -> bytes:
-    """Remove PKCS#7 padding."""
-    unpadder = padding.PKCS7(16).unpadder()
-    return unpadder.update(data) + unpadder.finalize()
-
-def aes_encrypt(key: bytes, plaintext: bytes) -> bytes:
-    """AES-128 ECB encrypt with PKCS#7 pad."""
-    ptext = pad_pkcs7(plaintext)
-    cipher = Cipher(algorithms.AES(key), modes.ECB(), backend=default_backend())
-    encryptor = cipher.encryptor()
-    return encryptor.update(ptext) + encryptor.finalize()
-
-def aes_decrypt(key: bytes, ciphertext: bytes) -> bytes:
-    """AES-128 ECB decrypt and unpad."""
-    cipher = Cipher(algorithms.AES(key), modes.ECB(), backend=default_backend())
-    decryptor = cipher.decryptor()
-    ptext = decryptor.update(ciphertext) + decryptor.finalize()
-    return unpad_pkcs7(ptext)
+from ..common.utils import b64e, b64d
+import os
 
 def encrypt_to_b64(key: bytes, plaintext: str) -> str:
-    """Encrypt str to base64 ct."""
-    ct = aes_encrypt(key, plaintext.encode())
-    return b64e(ct)
+    """Encrypt plaintext with AES-128 CBC and return base64 string."""
+    # Generate random IV
+    iv = os.urandom(16)
+    
+    # Pad the plaintext
+    padder = padding.PKCS7(128).padder()
+    padded_data = padder.update(plaintext.encode()) + padder.finalize()
+    
+    # Encrypt
+    cipher = Cipher(algorithms.AES(key), modes.CBC(iv), backend=default_backend())
+    encryptor = cipher.encryptor()
+    ciphertext = encryptor.update(padded_data) + encryptor.finalize()
+    
+    # Return IV + ciphertext as base64
+    return b64e(iv + ciphertext)
 
-def decrypt_from_b64(key: bytes, ct_b64: str) -> str:
-    """Decrypt base64 ct to str."""
-    ct = b64d(ct_b64)
-    return aes_decrypt(key, ct).decode()
+def decrypt_from_b64(key: bytes, encrypted_b64: str) -> str:
+    """Decrypt base64 encrypted data with AES-128 CBC."""
+    # Decode from base64
+    encrypted_data = b64d(encrypted_b64)
+    
+    # Extract IV and ciphertext
+    iv = encrypted_data[:16]
+    ciphertext = encrypted_data[16:]
+    
+    # Decrypt
+    cipher = Cipher(algorithms.AES(key), modes.CBC(iv), backend=default_backend())
+    decryptor = cipher.decryptor()
+    padded_plaintext = decryptor.update(ciphertext) + decryptor.finalize()
+    
+    # Unpad
+    unpadder = padding.PKCS7(128).unpadder()
+    plaintext = unpadder.update(padded_plaintext) + unpadder.finalize()
+    
+    return plaintext.decode()
