@@ -30,10 +30,26 @@ def validate_cert(cert: x509.Certificate, ca_cert: x509.Certificate, expected_cn
     - CN matches expected (or SAN for server) - optional for hello phase.
     Returns True if valid, else False.
     """
-    now = datetime.datetime.utcnow()
+    # Use an aware UTC datetime to compare against cert.not_valid_before_utc / not_valid_after_utc
+    now = datetime.datetime.now(datetime.timezone.utc)
     
     # 1. Validity period - use UTC versions to avoid deprecation warnings
-    if now < cert.not_valid_before_utc or now > cert.not_valid_after_utc:
+    # Some cryptography versions expose not_valid_before_utc / not_valid_after_utc (aware datetimes).
+    # Fall back to not_valid_before / not_valid_after if needed.
+    try:
+        not_before = cert.not_valid_before_utc
+        not_after = cert.not_valid_after_utc
+    except AttributeError:
+        # older cryptography fallback (may be naive datetimes)
+        not_before = cert.not_valid_before
+        not_after = cert.not_valid_after
+        # if these are naive, make them aware in UTC for safe comparison
+        if not_before.tzinfo is None:
+            not_before = not_before.replace(tzinfo=datetime.timezone.utc)
+        if not_after.tzinfo is None:
+            not_after = not_after.replace(tzinfo=datetime.timezone.utc)
+
+    if now < not_before or now > not_after:
         print("[PKI] Cert expired/invalid period")
         return False
     
