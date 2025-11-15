@@ -1,0 +1,12 @@
+{
+    "messages": [
+        {
+            "timestamp": "",
+            "sender": "",
+            "message": "",
+            "signature": ""
+        }
+    ],
+    "public_key": "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAtbTNyLXmzufqjUY38AEP\nEP+5fvescWDJhxaPZm76nLpugD7pEviJnTUAEeW4nyqDqaLo8jbL8+QeU1edCLdR\n2r8yuKqzWTXZPoz1A0HOlwbC6rPsEs61yof4K2vhtbAMNYC1ztlOznkCl5lXSGHS\noHBeilf87T5hPfPuCwpeBTdtcVAyPoJIl5kclKMvjTGtdvBH9f7WJ7wBPUjTKPvJ\nAPuuVOvJmSBeHKmuGX9+vN6lJ1vusDeGUmtqAtPtRvNs+Ryl/rHa58SFxp/+9Iky\naoy4+C9vryQ+pyLMcvP3V3SSu1L0qqGaUAM3L7app7S5H79Y+FrrgI8LjlVWNLp7\nHwIDAQAB\n-----END PUBLIC KEY-----\n",
+    "client_signature": "jEeSQN2JWGlQ6H2039CuepOZ6dNsfPuxHrDXa7cKwqlnql4riN1+zedlvsZPCwo0bL+loQaW9ZDVM5bkfwXBh2zFNC67+81IscMlv6dHQRh0kccEqoOGZ2lK+Zy5Xow4XsxFH/duhYhZet0TfhG6StHkSL/Rjmohk7RDaXW1aEV+5d4dYiEmUTFU1939gbLRTD7JM5KiXYpijv65kb5DskZRrIFTzgojpI0jrY31GNa3nOSe/KyXx9gn7VMVQr4dci0R18F7JXLXZAkeFquWPNMP/D/zVk8S6hVUzBDlmvwOrqUya/MMrXO6lFzpAcHHXGpSnDJC+SrpJJfO7gEHFg=="
+}

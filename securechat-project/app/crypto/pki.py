@@ -71,7 +71,9 @@ def validate_cert(cert: x509.Certificate, ca_cert: x509.Certificate, expected_cn
             try:
                 san_ext = cert.extensions.get_extension_for_oid(ExtensionOID.SUBJECT_ALTERNATIVE_NAME)
                 san = san_ext.value
-                if expected_cn in [name.value for name in san.get_values_for_type(x509.DNSName)]:
+                #if expected_cn in [name.value for name in san.get_values_for_type(x509.DNSName)]:
+                dns_names = san.get_values_for_type(x509.DNSName)
+                if expected_cn in dns_names:
                     print(f"[PKI] SAN match: {expected_cn}")
                 else:
                     print(f"[PKI] CN/SAN mismatch: expected {expected_cn}")
